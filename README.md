@@ -13,3 +13,7 @@
 #### 文件/文件夹作用
 
 tools：用于存放其它小工具
+
+#### 编译环境
+
+Microsoft Visual Studio 2022 + MSVC + Qt6.2.4
