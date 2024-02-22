@@ -8,7 +8,7 @@
 
 运行环境：Windows操作系统（兼容性待测试）
 
-![537工具箱Logo100*100](537Toolbox%20Logo.png)
+![537工具箱图标](537ToolboxLogo.png)
 
 #### 文件/文件夹作用
 
