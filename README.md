@@ -6,7 +6,10 @@
 
 基于C++的Qt库
 
-运行环境：Windows操作系统（兼容性待测试）
+#####运行环境：
+
+32位版本：WindowsXP Server Pack1（2001）及以上32位系统版本
+64位版本：WindowsXP Server Pack1 Professional x64（2005）及以上64位系统版本
 
 ![537工具箱图标](537ToolboxLogo.png)
 
@@ -14,6 +17,7 @@
 
 tools：用于存放其它小工具
 
-#### 编译环境
+#### 开发环境
 
-Microsoft Visual Studio 2022 + MSVC + Qt6.2.4
+Bloodshed Dev-C++ 5.11 + TDM-GCC 4.9.2（MingW）+ EasyX
+采用ISO C++11标准
