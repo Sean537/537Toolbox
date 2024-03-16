@@ -1,0 +1,36 @@
+/* THIS FILE WILL BE OVERWRITTEN BY DEV-C++ */
+/* DO NOT EDIT! */
+
+#include <windows.h> // include for version info constants
+
+
+A ICON "537Toolbox.ico"
+
+//
+// TO CHANGE VERSION INFORMATION, EDIT PROJECT OPTIONS...
+//
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILETYPE VFT_APP
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "080404E4"
+    {
+      VALUE "CompanyName", "537 Studio"
+      VALUE "FileVersion", "1.0.0.0"
+      VALUE "FileDescription", "537Toolbox"
+      VALUE "InternalName", "537Toolbox"
+      VALUE "LegalCopyright", "Copyright(C)537Studio.2023-2024.All rights reserved."
+      VALUE "LegalTrademarks", "537Toolbox Logo"
+      VALUE "OriginalFilename", "537Toolbox"
+      VALUE "ProductName", "537Toolbox"
+      VALUE "ProductVersion", "1.0.0.0"
+    }
+  }
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x0804, 1252
+  }
+}
