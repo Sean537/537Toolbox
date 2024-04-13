@@ -12,6 +12,7 @@ Copyright©537 Studio.2023-2024.All rights reserved.
 import requests
 import os
 import urllib3
+import sys
 from tkinter import messagebox
 def TestInternet():
     try:
@@ -21,6 +22,7 @@ def TestInternet():
         return "F"
 if TestInternet()=="F":
     messagebox.showwarning('警告', '当前状态：未联网')
+    sys.exit()
 
 #要保存的网页URL
 url = 'https://www.537studio.com/software/update/537Toolbox_NewVersion.txt'
