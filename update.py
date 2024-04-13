@@ -11,8 +11,18 @@ Copyright©537 Studio.2023-2024.All rights reserved.
 '''
 import requests
 import os
+import urllib3
+from tkinter import messagebox
+def TestInternet():
+    try:
+        http = urllib3.PoolManager()
+        http.request('GET', 'https://baidu.com')
+    except:
+        return "F"
+if TestInternet()=="F":
+    messagebox.showwarning('警告', '当前状态：未联网')
 
-# 要保存的网页URL
+#要保存的网页URL
 url = 'https://www.537studio.com/software/update/537Toolbox_NewVersion.txt'
 
 # 发送HTTP请求获取网页内容
