@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=-leasyx -lgdi32 -lole32_@@__@@_
+Linker=-lwinmm _@@_
 IsCpp=1
 Icon=537Toolbox.ico
 ExeOutput=
@@ -25,27 +25,27 @@ UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
 Folders=include
-IncludeVersionInfo=1
+IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=00000000c0000000000000000
-UnitCount=4
+UnitCount=7
 
 [VersionInfo]
 Major=1
 Minor=0
 Release=0
 Build=0
-LanguageID=2052
+LanguageID=1033
 CharsetID=1252
-CompanyName=537 Studio
+CompanyName=
 FileVersion=1.0.0.0
-FileDescription=537Toolbox
-InternalName=537Toolbox
-LegalCopyright=Copyright(C)537Studio.2023-2024.All rights reserved.
-LegalTrademarks=537Toolbox Logo
-OriginalFilename=537Toolbox
-ProductName=537Toolbox
+FileDescription=Developed using the Dev-C++ IDE
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
 ProductVersion=1.0.0.0
 AutoIncBuildNr=0
 SyncProduct=1
@@ -54,16 +54,6 @@ SyncProduct=1
 FileName=537main.cpp
 CompileCpp=1
 Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
-FileName=include\card.h
-CompileCpp=1
-Folder=include
 Compile=1
 Link=1
 Priority=1000
@@ -80,8 +70,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit5]
-FileName=include\graphics.h
+[Unit3]
+FileName=include\card.h
 CompileCpp=1
 Folder=include
 Compile=1
@@ -92,6 +82,36 @@ BuildCmd=
 
 [Unit4]
 FileName=include\docs.h
+CompileCpp=1
+Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+FileName=include\music.h
+CompileCpp=1
+Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit6]
+FileName=include\Wild_music.h
+CompileCpp=1
+Folder=include
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit7]
+FileName=include\settings.h
 CompileCpp=1
 Folder=include
 Compile=1

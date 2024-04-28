@@ -10,14 +10,14 @@
 #define VER_MINOR	0
 #define VER_RELEASE	0
 #define VER_BUILD	0
-#define COMPANY_NAME	"537 Studio"
+#define COMPANY_NAME	""
 #define FILE_VERSION	"1.0.0.0"
-#define FILE_DESCRIPTION	"537Toolbox"
-#define INTERNAL_NAME	"537Toolbox"
-#define LEGAL_COPYRIGHT	"Copyright(C)537Studio.2023-2024.All rights reserved."
-#define LEGAL_TRADEMARKS	"537Toolbox Logo"
-#define ORIGINAL_FILENAME	"537Toolbox"
-#define PRODUCT_NAME	"537Toolbox"
+#define FILE_DESCRIPTION	"Developed using the Dev-C++ IDE"
+#define INTERNAL_NAME	""
+#define LEGAL_COPYRIGHT	""
+#define LEGAL_TRADEMARKS	""
+#define ORIGINAL_FILENAME	""
+#define PRODUCT_NAME	""
 #define PRODUCT_VERSION	"1.0.0.0"
 
 #endif /*537TOOLBOX_PRIVATE_H*/

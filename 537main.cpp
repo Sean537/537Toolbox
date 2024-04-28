@@ -1,118 +1,225 @@
-#include <iostream>
 #include <windows.h>
-#include <graphics.h>
-#include <conio.h>
-#include "include\about.h"
-#include "include\card.h"
-int main(){
-	// 初始化绘图窗口
-	initgraph(800,600);
-	// 设置背景颜色为白色
-	setbkcolor(WHITE);
-	// 用背景色清空屏幕
-	cleardevice();
-	
-	// 获得窗口句柄
-	HWND hWnd = GetHWnd();
-	// 使用 Windows API 修改窗口名称
-	SetWindowText(hWnd, "537工具箱");
-	init();//初始化
-	 
-	
-	
-    card1();//创建1号卡片
-	card2();
-	card3();
-	card4();
-	card5();
-	card6();
-	
-	RECT card1_rect = {400,15,580,120};  // 创建表示1号卡片圆角矩形区域的RECT结构体对象
-	RECT card2_rect = {600,15,780,120};
-	RECT card3_rect = {400,135,580,240};  // 创建表示圆角矩形区域的RECT结构体对象
-	RECT card4_rect = {600,135,780,240};
-	RECT card5_rect = {400,255,580,360};
-	RECT card6_rect = {600,255,780,360};
-	int button1_mousemode=0,button1_mousemodeex=0;
-	int button2_mousemode=0,button2_mousemodeex=0;
-	int button3_mousemode=0,button3_mousemodeex=0;
-	int button4_mousemode=0,button4_mousemodeex=0;
-	int button5_mousemode=0,button5_mousemodeex=0;
-	int button6_mousemode=0,button6_mousemodeex=0;
-	while (true)
-	{
-		MOUSEMSG msg = GetMouseMsg();
-			POINT pt = {msg.x, msg.y};  // 获取鼠标坐标
-			/*
-			原型如下： 
-			if (PtInRect(&rect1, pt)){// 判断鼠标是否在圆角矩形内
-				button1_mousemode=1;//在图形内 
-			}else{
-				button1_mousemode=0;
-			}*/
-			PtInRect(&card1_rect, pt)?button1_mousemode=1:button1_mousemode=0;
-			PtInRect(&card2_rect, pt)?button2_mousemode=1:button2_mousemode=0;
-			PtInRect(&card3_rect, pt)?button3_mousemode=1:button3_mousemode=0;
-			PtInRect(&card4_rect, pt)?button4_mousemode=1:button4_mousemode=0;
-			PtInRect(&card5_rect, pt)?button5_mousemode=1:button5_mousemode=0;
-			PtInRect(&card6_rect, pt)?button6_mousemode=1:button6_mousemode=0;
-			
-			
-			if(button1_mousemode!=button1_mousemodeex){
-				//std::cout<<"不相等\n";
-				if(button1_mousemode==1){
-					fillcard1();
-					//std::cout<<"已填充\n\n";
-				}
-				else unfillcard1();
-				/*
-				// 画渐变的天空(通过亮度逐渐增加)
-				float H = 195;		// 色相
-				float S = 1;		// 饱和度
-				float L = 0.5f;		// 亮度
-				setlinestyle(PS_SOLID, 2);		// 设置线宽为 2
-				for(int r = 30; r > 1; r--){
-					H += 1;
-					setlinecolor(HSLtoRGB(H, S, L));
-					circle(500, 480, r);
+#include <ShellAPI.h>
+#include <string>
+#include <mmsystem.h>
+#include "include/about.h"
+#include "include/card.h"
+#include "include/music.h"
+#include "include/settings.h"
+#pragma comment(lib, "winmm.lib") // 使用音乐播放库需要链接-lwinmm 
+
+NOTIFYICONDATA nid;
+HMENU hPopupMenu;
+
+char AppClassName[] = "537Toolbox";
+
+HINSTANCE g_hInst;
+HWND g_hMainWindow;
+HBITMAP hBitmap;
+
+int WIN_WIDTH = 800,WIN_HEIGHT = 600;
+
+// 获取屏幕尺寸
+int screenWidth = GetSystemMetrics(SM_CXSCREEN);//屏幕宽 
+int screenHeight = GetSystemMetrics(SM_CYSCREEN);//屏幕高 
+
+// 计算窗口左上角坐标使其位于屏幕中心
+int init_x=(screenWidth-WIN_WIDTH)/2;
+int init_y=(screenHeight-WIN_HEIGHT)/2;
+    
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    	case WM_SIZE:
+        	WIN_WIDTH = LOWORD(lParam);
+        	WIN_HEIGHT = HIWORD(lParam);
+        	break;
+    	case WM_GETMINMAXINFO: {
+    		//窗口尺寸不小于640*480 
+        	MINMAXINFO* lpMMI = (MINMAXINFO*)lParam;
+        	lpMMI->ptMinTrackSize.x = 640;
+        	lpMMI->ptMinTrackSize.y = 480;
+        	break;    
+    	}
+    	
+        case WM_CREATE:
+            // 创建系统托盘图标
+            nid.cbSize = sizeof(NOTIFYICONDATA);
+            nid.hWnd = hwnd;
+            nid.uID = 1;
+            nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+            nid.uCallbackMessage = WM_USER + 1;
+            nid.hIcon = LoadIcon(g_hInst,"A");
+            lstrcpy(nid.szTip, AppClassName);
+            Shell_NotifyIcon(NIM_ADD, &nid);
+
+            // 创建右键菜单
+            hPopupMenu = CreatePopupMenu();
+            AppendMenu(hPopupMenu, MF_STRING, 1, "打开");
+            AppendMenu(hPopupMenu, MF_SEPARATOR, 0, NULL);
+            AppendMenu(hPopupMenu, MF_STRING, 2, "帮助");
+            AppendMenu(hPopupMenu, MF_STRING, 3, "更新");
+            AppendMenu(hPopupMenu, MF_STRING, 4, "关于");
+            AppendMenu(hPopupMenu, MF_SEPARATOR, 0, NULL);
+            AppendMenu(hPopupMenu, MF_STRING, 5, "退出");
+            // 加载软件图标
+            hBitmap = LoadBitmap(g_hInst,"A");
+            break;
+        case WM_COMMAND:
+        	switch(LOWORD(wParam)){
+        		case 1:
+        			// 打开操作
+                	ShowWindow(g_hMainWindow,1);
+					UpdateWindow(g_hMainWindow);
+                	break;
+                case 2:
+                	//打开帮助面板
+					ShellExecute(hwnd,"open","https://www.537studio.com/help",NULL,NULL,SW_SHOWNORMAL);
+					break;
+					/*
+                	//打开首页
+                	mciSendString("play audio/537Welcome.mp3",NULL,0,hwnd); //播放音乐  
+                	break;
+                	*/
+				case 3:
+					//打开更新窗口 
+					ShellExecute(hwnd,"open","update.exe",NULL,NULL,SW_SHOWNORMAL);
+					break;
+				case 4:
+					//打开关于窗口 
+					ShellAbout(hwnd, "537工具箱", "537工具箱	版本1.0(Beta)\n537工作室版权所有。该版本为内测版本，非内部人员请勿使用。", NULL);
+					break;
+				case 5:
+					// 退出操作
+                	DestroyWindow(hwnd);
+                	break;
+				default:
+                	break;
+        	}
+            break;
+        case WM_USER + 1:
+            // 处理托盘图标的消息
+            switch (lParam) {
+                case WM_RBUTTONDOWN:
+        		case WM_CONTEXTMENU:
+            		POINT pt;
+           		 	GetCursorPos(&pt);
+           			SetForegroundWindow(hwnd);
+            		TrackPopupMenu(hPopupMenu, TPM_RIGHTBUTTON, pt.x, pt.y, 0, hwnd, NULL);
+            		break;
+        		case WM_MOUSEMOVE:
+            		Shell_NotifyIcon(NIM_MODIFY, &nid);
+            		break;
+        		case WM_LBUTTONDOWN:
+            		// 单击托盘图标打开软件
+            		ShowWindow(g_hMainWindow,1);
+					UpdateWindow(g_hMainWindow);
+           		 	break;
+           		}
+            	break;
+        case WM_PAINT:
+            {
+                
+				PAINTSTRUCT ps;
+                HDC hdc = BeginPaint(hwnd, &ps);
+                // 设置背景色为黑色
+                SetBkColor(hdc, RGB(0, 0, 0));
+                HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+                FillRect(hdc, &ps.rcPaint, hBrush);
+                DeleteObject(hBrush);
+                
+                SetBkMode(hdc, TRANSPARENT);
+
+                // 绘制白色圆形
+                HBRUSH hWhiteBrush = CreateSolidBrush(RGB(255, 255, 255));
+                SelectObject(hdc, hWhiteBrush);
+                Ellipse(hdc, 200, 200, 400, 400);
 				
-				}
-				*/
-				button1_mousemodeex=button1_mousemode;
-			}
-			if(button2_mousemode!=button2_mousemodeex){
-				if(button2_mousemode==1){
-					fillcard2();
-				}
-				else unfillcard2();
-				button2_mousemodeex=button2_mousemode;
-			}
-			button3_mousemode!=button3_mousemodeex?(button3_mousemode==1?fillcard3():unfillcard3()),button3_mousemodeex=button3_mousemode:1;
-			button4_mousemode!=button4_mousemodeex?(button4_mousemode==1?fillcard4():unfillcard4()),button4_mousemodeex=button4_mousemode:1;
-			button5_mousemode!=button5_mousemodeex?(button5_mousemode==1?fillcard5():unfillcard5()),button5_mousemodeex=button5_mousemode:1;
-			button6_mousemode!=button6_mousemodeex?(button6_mousemode==1?fillcard6():unfillcard6()),button6_mousemodeex=button6_mousemode:1;
+				HBRUSH hFTSBlueBrush = CreateSolidBrush(RGB(20, 126, 255));
+				SelectObject(hdc, hFTSBlueBrush);
+                // 绘制蓝色矩形
+                Rectangle(hdc, 500, 200, 700, 400);
+                
+                // 创建字体
+    			HFONT hFont = CreateFont(30, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "fonts/analogue.ttf");
+    			SelectObject(hdc, hFont);
+				
+    			// 设置文本颜色
+    			SetTextColor(hdc, RGB(255, 255, 255));
+
+    			// 显示文本
+    			TextOut(hdc, 100, 100, "Hello world!", 12);
+    			
+    			
+            	// 释放资源
+    			DeleteObject(hFont);
+    			ReleaseDC(NULL, hdc);
+                EndPaint(hwnd, &ps);
+            }
+            break;
+        case WM_LBUTTONDOWN:
+        	MessageBox(hwnd,"按下了鼠标左键","提示",MB_OK+64);
+        	break;
+        case WM_MOUSEMOVE:
+        	/* TODO (Sean537#9#): 待添加检测鼠标指针位置 */
+        	mouse.x=0;
+			mouse.y=0;
+        	break;
+        case WM_DESTROY:
+            // 移除系统托盘图标
+            Shell_NotifyIcon(NIM_DELETE, &nid);
+            PostQuitMessage(0);
+            break;
+        default:
+            return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
+    return 0;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+	
+	WNDCLASSEX WndClassEx;
+	
+	g_hInst = hInstance;
+	
+	WndClassEx.cbSize          = sizeof(WNDCLASSEX);
+	WndClassEx.style           = CS_HREDRAW | CS_VREDRAW;
+	WndClassEx.lpfnWndProc     = WndProc;
+	WndClassEx.cbClsExtra      = 0;
+	WndClassEx.cbWndExtra      = 0;
+	WndClassEx.hInstance       = hInstance;
+	WndClassEx.hIcon           = LoadIcon(hInstance, "A");
+	WndClassEx.hCursor         = LoadCursor(hInstance, IDC_ARROW);
+	WndClassEx.hbrBackground   = (HBRUSH)(COLOR_3DSHADOW+1);
+	WndClassEx.lpszClassName   = AppClassName;
+	WndClassEx.hIconSm         = LoadIcon(hInstance,"A");
+	
+	if(!RegisterClassEx(&WndClassEx)) {
+		MessageBox(0, "无法注册窗口。请检查系统环境是否正常或寻求技术帮助。", "错误",MB_ICONEXCLAMATION | MB_OK);
+		return -1;
 	}
 
-	about_thisapp();
-	
-	/*
-	// 定义字符串缓冲区，并接收用户输入
-	char s[10];
-	InputBox(s, 10, "请输入半径");
+    
+    
+	g_hMainWindow = CreateWindowEx(WS_EX_APPWINDOW,AppClassName,"537工具箱",WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+		init_x,
+		init_y,
+		WIN_WIDTH,
+		WIN_HEIGHT,
+		0, 0, hInstance, NULL);
 
-	// 将用户输入转换为数字
-	int r = atoi(s);;
-	std::cout<<r;
-	// 画圆
-	circle(320, 240, r);
-	
-	// 按任意键退出
-	_getch();
-	closegraph();
-	*/
-	// 按任意键退出
-	_getch();
-	closegraph();
-	return 0;
+	if (g_hMainWindow == NULL){
+		MessageBox(0, "无窗口。请检查系统环境是否正常或寻求技术帮助。", "错误", MB_ICONEXCLAMATION | MB_OK);
+		return -1;
+	}
+
+	ShowWindow(g_hMainWindow, nCmdShow);
+	UpdateWindow(g_hMainWindow);
+    // 消息循环
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    return msg.wParam;
 }
 
