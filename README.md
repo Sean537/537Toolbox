@@ -22,6 +22,6 @@ include：一些需要使用的头文件（不包含EasyX图形库文件）
 
 #### 开发环境
 
-Bloodshed Dev-C++ 5.11 + TDM-GCC 4.9.2（MingW）+ EasyX
+Bloodshed Dev-C++ 5.11 + TDM-GCC 4.9.2（MingW）+ Win32/GDI/API
 
 采用ISO C++11标准
